@@ -69,7 +69,7 @@ func (parser *Parser) Hook(nick string, message string) {
         for _, mod := range parser.bot.Hooks {
             command := words[0][1:]
             if cmd, ok := mod.Commands[command]; ok {
-                reflect.ValueOf(mod.Type).MethodByName(cmd).Call([]reflect.Value{})
+                parser.bot.Write(reflect.ValueOf(mod.Type).MethodByName(cmd).Call([]reflect.Value{})[0].Interface().(string))
             }
         }
     }

@@ -1,9 +1,5 @@
 package modules
 
-import (
-    "fmt"
-)
-
 type Crud struct {}
 
 func (crud *Crud) Commands() map[string]string {
@@ -14,6 +10,6 @@ func (crud *Crud) Commands() map[string]string {
 
 // end boilerplate
 
-func (crud *Crud) Greet() {
-    fmt.Printf("Called Greet!\n")
+func (crud *Crud) Greet() string {
+    return "Called Greet!\n"
 }
