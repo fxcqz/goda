@@ -2,7 +2,6 @@ package modules
 
 import (
     "io/ioutil"
-    "reflect"
     "strings"
 )
 
@@ -22,18 +21,18 @@ func NewModule(_name string, _type interface{}, _commands map[string]string) *Mo
 }
 
 type ModuleData struct {
-    modules []string
-    active []string
+    Modules []string
+    Active []string
 }
 
 func NewModuleData(_active []string) *ModuleData {
     return &ModuleData {
-        modules: listModules(),
-        active: _active,
+        Modules: ListModules(),
+        Active: _active,
     }
 }
 
-func listModules() []string {
+func ListModules() []string {
     dirInfo, _ := ioutil.ReadDir("modules/")
     var modules []string
     for _, files := range dirInfo {
@@ -43,11 +42,4 @@ func listModules() []string {
         }
     }
     return modules
-}
-
-func Hook(nick string, message string) {
-    if message == "hello" {
-        var c Crud
-        reflect.ValueOf(&c).MethodByName("Greet").Call([]reflect.Value{})
-    }
 }

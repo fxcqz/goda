@@ -53,3 +53,24 @@ func (bot *Bot) Register(module string) *modules.Module {
     commands := rcmds[0].Interface().(map[string]string)
     return modules.NewModule(module, _type, commands)
 }
+
+func (bot *Bot) RegisterModules() {
+    var hooks []*modules.Module
+    for _, module := range bot.Modules.Active {
+        hooks = append(hooks, bot.Register(module))
+    }
+    bot.Hooks = hooks
+}
+
+func (parser *Parser) Hook(nick string, message string) {
+    words := strings.Split(message, " ")
+    if words[0][:1] == "%" {
+        // calling a command
+        for _, mod := range parser.bot.Hooks {
+            command := words[0][1:]
+            if cmd, ok := mod.Commands[command]; ok {
+                reflect.ValueOf(mod.Type).MethodByName(cmd).Call([]reflect.Value{})
+            }
+        }
+    }
+}

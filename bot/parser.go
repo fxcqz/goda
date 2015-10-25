@@ -5,8 +5,6 @@ import (
     "net"
     "net/textproto"
     "strings"
-
-    "goda/modules"
 )
 
 type Parser struct {
@@ -31,6 +29,8 @@ func tokenise(line string) (string, string) {
 func (parser *Parser) Parse() {
     reader := bufio.NewReader(parser.conn)
     tp := textproto.NewReader(reader)
+
+    // register modules
     for {
         line, err := tp.ReadLine()
         if err != nil {
@@ -38,7 +38,7 @@ func (parser *Parser) Parse() {
         }
         if strings.Contains(line, "PRIVMSG") {
             nick, message := tokenise(line)
-            modules.Hook(nick, message)
+            parser.Hook(nick, message)
         }
     }
 }
