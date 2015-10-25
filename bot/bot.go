@@ -3,6 +3,8 @@ package bot
 import (
     "fmt"
     "net"
+    "reflect"
+    "strings"
     "goda/modules"
 )
 
@@ -13,6 +15,7 @@ type Bot struct {
     conn net.Conn
     Channel string
     Modules *modules.ModuleData
+    Hooks []*modules.Module
     Nick string
 }
 
@@ -40,4 +43,13 @@ func (bot *Bot) Connect() (conn net.Conn, err error) {
 
 func (bot *Bot) Write(text string) {
     fmt.Fprintf(bot.conn, "PRIVMSG %s :%s\r\n", bot.Channel, text)
+}
+
+func (bot *Bot) Register(module string) *modules.Module {
+    module = strings.ToLower(module)
+    module = string(module[0] ^ 0x20) + module[1:]
+    _type, _ := modules.TypeRegistry.Get(module)
+    rcmds := reflect.ValueOf(_type).MethodByName("Commands").Call([]reflect.Value{})
+    commands := rcmds[0].Interface().(map[string]string)
+    return modules.NewModule(module, _type, commands)
 }

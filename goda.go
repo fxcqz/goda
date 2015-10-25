@@ -8,6 +8,7 @@ import (
 func main() {
     activeModules := []string{"core"}
     goda := bot.NewBot(activeModules)
+    goda.Register("Crud")
     conn, _ := goda.Connect()
 
     fmt.Fprintf(conn, "USER %s 8 * :%s\r\n", goda.Nick, goda.Nick)
